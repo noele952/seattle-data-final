@@ -1,0 +1,110 @@
+{% include "header.html" %}
+
+				<!-- Main -->
+					<div id="main">
+						<!-- Introduction -->
+							<section id="intro" class="main">
+
+								<div id="map-pos" class="container-md" style="width:90%; margin:auto; text-align:center;">
+									<h1 style="font-weight:bold; margin:.2em;">Emergency Incidents</h1>
+
+									<div style="position:relative; height:30px;">
+	<form class="form-inline" style="text-align:left;" method="POST" action="{{ url_for('emergency') }}">
+		{{ form.hidden_tag() }}
+  <div class="col-sm-4" style="padding-right:2px; width:20%; height:30px; display: inline-block; ">
+    {{form.incident() }}
+  </div>
+
+  <div class="col-sm-4" style="width:20%; padding-right:2px; display: inline-block;">
+    {{form.neighborhood() }}
+  </div>
+<div class="col-sm-4" style="width:20%; display:inline-block; ">
+  {{form.submit(style="background-color:#008CBA; color:white;") }}
+
+</div>
+</form>
+</div>
+  {{ map | safe }}
+<h3 style="padding:1em 3em; line-height:2em;" id="map"> Incident data collected over the last 72 hours. Click on an incident to find out more details. Search for
+	specific neighborhoods, or specific incident types using the search controls at the top of the map</h3>
+	</div>
+							</section>
+<div id="map-pos" class="container-md" style="width:90%; margin:auto; text-align:center;">
+	<h1 style="font-weight:bold; margin:1em .2em .2em .2em;" >911 Incident Heatmap</h1>
+
+									<div style="position:relative; height:30px;">
+
+</div>
+  {{ map2 | safe }}
+<h3 style="padding:1em 3em; line-height:2em;" id="heatmap"> The heatmap data is aggregated from data collected over the last 30 days. The hotter the color, the greater the
+	activity. Use the map or your mouse controls to scroll and zoom. The heatmap will be adjusted to show local
+	patterns as your distance settings change</h3>
+	</div>
+						<!-- First Section -->
+							<section id="first" class="main special">
+
+								<h1 style="font-weight:bold; margin:1em;">Emergency Incidents by Category</h1>
+								<h2 style="margin-bottom:1em;"> click on the interactive graph for more information</h2>
+								<ul class="features">
+									<li>
+										<img src="{{ url_for('static', filename='/images/246942.png') }}" style="width:250px">
+										<h3>911 Call Data</h3>
+										<p style="text-align:left">The interactive sunburst graph to the right breaks down the 911 data by category. The main
+											categories are Medical, Fire, Police, and Other. Click on one of the main categories in the center
+										for a breakdown of all the incidents in that particular category.</p>
+										<p style="text-align:left">Hover over a section of the graph for more information, like
+										the actual incident count.</p>
+									</li>
+									<li>
+										<iframe id="sunburst" class="image" style="width:600px; height:600px" src="{{ url_for('static', filename='/sunburst_911.html') }}" ></iframe>
+									</li>
+
+								</ul>
+								<footer class="major">
+									<ul class="actions special">
+										<li><a href="{{ url_for('static', filename='/sunburst_911.html') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Full Screen Sunburst Graph</a></li>
+									</ul>
+								</footer>
+							</section>
+
+						<!-- Second Section
+
+							<section id="second" class="main special">
+								<header class="major">
+									<h2>More graphs</h2>
+									<p>Data broken down by any dimension you can imagine. Click below to learn more</p>
+								</header>
+								<ul class="statistics">
+									<li class="style1">
+										<span class="icon solid fa-code-branch"></span>
+										<strong>5,120</strong> Etiam
+									</li>
+									<li class="style2">
+										<span class="icon fa-folder-open"></span>
+										<strong>8,192</strong> Magna
+									</li>
+									<li class="style3">
+										<span class="icon solid fa-signal"></span>
+										<strong>2,048</strong> Tempus
+									</li>
+									<li class="style4">
+										<span class="icon solid fa-laptop"></span>
+										<strong>4,096</strong> Aliquam
+									</li>
+									<li class="style5">
+										<span class="icon fa-gem"></span>
+										<strong>1,024</strong> Nullam
+									</li>
+								</ul>
+								<p class="content">Nam elementum nisl et mi a commodo porttitor. Morbi sit amet nisl eu arcu faucibus hendrerit vel a risus. Nam a orci mi, elementum ac arcu sit amet, fermentum pellentesque et purus. Integer maximus varius lorem, sed convallis diam accumsan sed. Etiam porttitor placerat sapien, sed eleifend a enim pulvinar faucibus semper quis ut arcu. Ut non nisl a mollis est efficitur vestibulum. Integer eget purus nec nulla mattis et accumsan ut magna libero. Morbi auctor iaculis porttitor. Sed ut magna ac risus et hendrerit scelerisque. Praesent eleifend lacus in lectus aliquam porta. Cras eu ornare dui curabitur lacinia.</p>
+								<footer class="major">
+									<ul class="actions special">
+										<li style="padding:1em;"><a href="generic.html" class="button">Learn More</a></li>
+									</ul>
+								</footer>
+							</section>
+ -->
+					</div>
+
+				<!-- Footer -->
+{% include "footer.html" %}
