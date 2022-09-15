@@ -1,4 +1,5 @@
 import folium
+from folium import plugins
 from shapely.geometry import shape, Point
 from data import icon_data
 from datetime import datetime
@@ -7,9 +8,30 @@ import urllib.parse
 import pyproj
 from shapely.ops import transform
 from functools import partial
+import pandas as pd
+import plotly.express as px
 
 
 AWS_DEFAULT_REGION = 'us-east-1'
+
+
+def create_neighborhood_list(geojson):
+    neighborhood_list = []
+    for feature in geojson:
+        if feature['properties']['city'] == 'Seattle':
+            neighborhood_list.append(feature['properties']['name'])
+    neighborhood_list.sort(reverse=True)
+    neighborhood_list.insert(0, 'Entire City')
+    return neighborhood_list
+
+
+def create_incident_list(data, type_func):
+    incident_list = [type_func(item) for item in data]
+    incident_list = set(incident_list)
+    incident_list = list(incident_list)
+    incident_list.sort()
+    incident_list.insert(0, 'All Incidents')
+    return incident_list
 
 
 def address_lat_lon(address):
@@ -198,3 +220,119 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                 except:
                     print("error")
     return m
+
+
+def generate_heatmap(neighborhood, incident, data, geojson, type_func):
+    m = folium.Map(location=[47.608, -122.335], tiles='Cartodb dark_matter', zoom_start=13)
+    point_list = []
+    if incident == 'All Incidents':
+        for item in data:
+            try:
+                new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
+                point_list.append(new_point)
+            except:
+                print("error")
+    else:
+        for item in data:
+            if type_func(item) == incident:
+                try:
+                    new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
+                    point_list.append(new_point)
+                except:
+                    print("error")
+    if neighborhood != 'Entire City':
+        for feature in geojson:
+            if feature['properties']['name'] == neighborhood:
+                try:
+                    center_lat = shape(feature["geometry"]).buffer(0).centroid.y
+                    center_lon = shape(feature["geometry"]).buffer(0).centroid.x
+                    m = folium.Map(location=[center_lat,
+                                             center_lon],
+                                   zoom_start=15)
+                    folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
+                except:
+                    print("error")
+
+    heat_data = [[point.xy[1][0], point.xy[0][0]] for point in point_list]
+    print(heat_data)
+    plugins.HeatMap(heat_data).add_to(m)
+    return m
+
+
+def generate_911_sunburst(data_911):
+    """Generates sunburst graph and stores it in static file"""
+    incident_df = pd.DataFrame(data_911)
+    df = incident_df.type.value_counts().rename_axis('incident').reset_index(name='counts')
+    fire_list = ['Automatic Fire Alarm Resd', 'Auto Fire Alarm', 'Bark Fire', 'Brush Fire Freeway', 'Car Fire',
+                 'Fire in Building', 'Rubbish Fire', 'Brush Fire', 'Dumpster Fire', 'Illegal Burn',
+                 'Encampment Fire',
+                 'Automatic Fire Alarm False', ]
+    medical_list = ['Triaged Incident', 'Nurseline/AMR', 'Aid Response', 'Mutual Aid- Aid', 'BC Aid Response',
+                    'Aid Response Yellow', 'Medic Response- Overdose', 'Medic Response- 6 per Rule',
+                    'Single Medic Unit',
+                    'BC Medic Response- 6 per rule', 'Medic Response', 'Medic Response- 7 per Rule']
+    police_list = ['Scenes Of Violence 7', '4RED - 2 + 1 + 1', 'MVI - Motor Vehicle Incident', 'Encampment Aid',
+                   '1RED 1 Unit', 'AFA4 - Auto Alarm 2 + 1 + 1', 'MVI Freeway']
+    incident_type_list = []
+    for incident in df.incident:
+        if incident in fire_list:
+            incident_type = 'Fire'
+        elif incident in medical_list:
+            incident_type = 'Medical'
+        elif incident in police_list:
+            incident_type = 'Police'
+        else:
+            incident_type = 'Other'
+        incident_type_list.append(incident_type)
+
+    df['incident_type'] = incident_type_list
+
+    fig = px.sunburst(df, path=['incident_type', 'incident'], values='counts',
+                      color_continuous_scale='Turbo'
+                      )
+    fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
+
+    fig.write_image('static/images/graphs/sunburst_911.png')
+    fig.write_html('static/sunburst_911.html')
+    return 1
+
+
+def generate_crime_sunburst(data_crime):
+    """Generates sunburst graph and stores it in static file"""
+    df = pd.DataFrame(data_crime)
+    df = df.offense.value_counts().rename_axis('incident').reset_index(name='counts')
+    crime_against_dict = {}
+    for item in data_crime:
+        crime_against_dict[item['offense']] = item['crime_against_category']
+    parent_group = [crime_against_dict.get(series.incident) for index, series in df.iterrows()]
+    df['offense_parent_group'] = parent_group
+    fig = px.sunburst(df, path=['offense_parent_group', 'incident'], values='counts',
+
+                      color_continuous_scale='Turbo'
+                      )
+    fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
+
+    fig.write_html('static/sunburst_crime.html')
+    fig.write_image('static/images/graphs/sunburst_crime.png')
+    return 1
+
+
+def generate_build_sunburst(data_build):
+    """Generates sunburst graph and stores it in static file"""
+    df = pd.DataFrame(data_build)
+    df = df.permitclass.value_counts().rename_axis('permitclass').reset_index(name='counts')
+    permitclassmapped_dict = {}
+    try:
+        for item in data_build:
+            permitclassmapped_dict[item['permitclass']] = item['permitclassmapped']
+    except:
+        print("error")
+    parent_group = [permitclassmapped_dict.get(series.permitclass) for index, series in df.iterrows()]
+    df['permitclassmapped'] = parent_group
+    fig = px.sunburst(df, path=['permitclassmapped', 'permitclass'], values='counts',
+
+                      color_continuous_scale='Turbo'
+                      )
+    fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
+    fig.write_image('static/images/graphs/sunburst_build.png')
+    fig.write_html('static/sunburst_build.html')

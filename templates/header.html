@@ -35,24 +35,24 @@
 							<li><a href="{{ url_for('index') }}" >Home</a></li>
 							{% endif %}
 							{% if session['page'] == 'emergency' %}
-							<li><a href="#" style="background-color:#008CBA; color:white; font-weight:bold;">911</a></li>
+							<li><a href="{{ url_for('emergency') }}" style="background-color:#008CBA; color:white; font-weight:bold;">911</a></li>
 							{% else %}
-							<li><a href="#" >911</a></li>
+							<li><a href="{{ url_for('emergency') }}" >911</a></li>
 							{% endif %}
 							{% if session['page'] == 'crime' %}
-							<li><a href="#" style="background-color:#008CBA; color:white; font-weight:bold;">Crime</a></li>
+							<li><a href="{{ url_for('crime') }}" style="background-color:#008CBA; color:white; font-weight:bold;">Crime</a></li>
 							{% else %}
-							<li><a href="#" >Crime</a></li>
+							<li><a href="{{ url_for('crime') }}" >Crime</a></li>
 							{% endif %}
 							{% if session['page'] == 'building' %}
-							<li><a href="#" style="background-color:#008CBA; color:white; font-weight:bold;">Construction</a></li>
+							<li><a href="{{ url_for('build') }}" style="background-color:#008CBA; color:white; font-weight:bold;">Construction</a></li>
 							{% else %}
-							<li><a href="#" >Construction</a></li>
+							<li><a href="{{ url_for('build') }}" >Construction</a></li>
 							{% endif %}
 							{% if session['page'] == 'violations' %}
-							<li><a href="#" style="background-color:#008CBA; color:white; font-weight:bold;">Violations</a></li>
+							<li><a href="{{ url_for('violations') }}" style="background-color:#008CBA; color:white; font-weight:bold;">Violations</a></li>
 							{% else %}
-							<li><a href="#" >Violations</a></li>
+							<li><a href="{{ url_for('violations') }}" >Violations</a></li>
 							{% endif %}
 
 
