@@ -6,7 +6,7 @@ import json
 from funcs import *
 from data import *
 import requests
-import os
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "SECRET_KEY"
@@ -81,13 +81,6 @@ def index():
         m5 = m5._repr_html_()
         return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5)
     return render_template('index.html', form=form)
-
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico',
-                               mimetype='image/vnd.microsoft.icon')
 
 
 if __name__ == '__main__':
