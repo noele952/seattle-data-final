@@ -2,24 +2,49 @@ import folium
 from shapely.geometry import shape
 from data import icon_data
 from datetime import datetime
+import requests
+import urllib.parse
+
+
+def address_lat_lon(address):
+    url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) + '?format=json'
+    response = requests.get(url).json()
+    return response[0]["lat"], response[0]["lon"]
+
+
+def get_data(endpoint, query=''):
+    if query:
+        response = requests.get(endpoint + query)
+    else:
+        response = requests.get(endpoint)
+    data = response.json()
+    return data
 
 
 def create_marker_text_911(item):
-    text = f"<p style='text-align:center; font-weight:bold;'>{item.get('type')}</p>" \
-         f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
-         f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
-         f"<p style='font-size:10px;'>Incident # {item.get('incident_number')}</p>"
+    try:
+        text = f"<p style='text-align:center; font-weight:bold;'>{item.get('type')}</p>" \
+             f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
+             f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
+             f"<p style='font-size:10px;'>Incident # {item.get('incident_number')}</p>"
+    except:
+        print("except")
+        text = ''
     return text
 
 
 def create_marker_text_crime(item):
-    text = f"<p style='text-align:center; font-weight:bold;'>{item.get('offense')}</p>" \
-         f"<p>Offense Type:{item.get('offense_parent_group')}</p>" \
-         f"<p>{datetime.strptime(item.get('report_datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
-         f"<p>{datetime.strptime(item.get('report_datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
-         f"<p style='font-size:10px;'>Report # {item.get('report_number')}</p>" \
-         f"<p style='font-size:10px;'>Offense ID {item.get('offense_id')}</p>" \
-         f"<p style='font-size:10px;'>{item.get('_100_block_address')}</p>"
+    try:
+        text = f"<p style='text-align:center; font-weight:bold;'>{item.get('offense')}</p>" \
+             f"<p>Offense Type:{item.get('offense_parent_group')}</p>" \
+             f"<p>{datetime.strptime(item.get('report_datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
+             f"<p>{datetime.strptime(item.get('report_datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
+             f"<p style='font-size:10px;'>Report # {item.get('report_number')}</p>" \
+             f"<p style='font-size:10px;'>Offense ID {item.get('offense_id')}</p>" \
+             f"<p style='font-size:10px;'>{item.get('_100_block_address')}</p>"
+    except:
+        print("except")
+        text = ''
     return text
 
 
@@ -37,26 +62,34 @@ def create_marker_text_build(item):
 
 
 def create_marker_landuse(item):
-    text = f"<p style='text-align:center; font-weight:bold;'>{item.get('permitclass')}</p>" \
-         f"<p>{item.get('originaladdress1')}</p>" \
-         f"<p>{item.get('description')}</p>" \
-         f"<p style='font-size:10px;'><a href={item.get('link', {}).get('url', None)} " \
-           f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>" \
-         f"<p>Contractor<p>" \
-         f"<p>{item.get('contractorcompanyname')}</p>"
+    try:
+        text = f"<p style='text-align:center; font-weight:bold;'>{item.get('permitclass')}</p>" \
+             f"<p>{item.get('originaladdress1')}</p>" \
+             f"<p>{item.get('description')}</p>" \
+             f"<p style='font-size:10px;'><a href={item.get('link', {}).get('url', None)} " \
+               f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>" \
+             f"<p>Contractor<p>" \
+             f"<p>{item.get('contractorcompanyname')}</p>"
+    except:
+        print("except")
+        text = ''
     return text
 
 
 def create_marker_violations(item):
-    if item.get('recordtypedesc'):
-        text = f"<p style='text-align:center; font-weight:bold;'>{item.get('recordtypedesc')}</p>" \
-            "<p>Date of Complaint:</p>" \
-            f"<p>{item.get('opendate')}</p>" \
-            f"<p>{item.get('description')}</p>"
-    else:
-        text = "<p>Date of Complaint:</p>" \
-               f"<p>{item.get('opendate')}</p>" \
-               f"<p>{item.get('description')}</p>"
+    try:
+        if item.get('recordtypedesc'):
+            text = f"<p style='text-align:center; font-weight:bold;'>{item.get('recordtypedesc')}</p>" \
+                "<p>Date of Complaint:</p>" \
+                f"<p>{item.get('opendate')}</p>" \
+                f"<p>{item.get('description')}</p>"
+        else:
+            text = "<p>Date of Complaint:</p>" \
+                   f"<p>{item.get('opendate')}</p>" \
+                   f"<p>{item.get('description')}</p>"
+    except:
+        print("except")
+        text = ''
     return text
 
 
@@ -90,14 +123,16 @@ def get_marker_color_icon(item):
     return color, icon
 
 
-def create_map(neighborhood, incident, data, geojson, marker_func,
-               type_func, location=(47.608, -122.335), zoom_start=12):
+def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
+               location=(47.608, -122.335), zoom_start=12):
     m = folium.Map(location=location, zoom_start=zoom_start)
     if neighborhood == 'Home':
         folium.Marker(
             location=location,
             icon=folium.Icon(color='red', icon='dot-circle-o', prefix='fa')
         ).add_to(m)
+    if neighborhood == 'Entire City':
+        m = folium.Map(location=location, zoom_start=zoom_start)
     else:
         for feature in geojson:
             if feature['properties']['name'] == neighborhood:
@@ -112,8 +147,6 @@ def create_map(neighborhood, incident, data, geojson, marker_func,
                     print("error")
     for item in data:
         icon_color, icon_img = get_marker_color_icon(type_func(item))
-        print(icon_color)
-        print(icon_img)
         if incident == 'All Incidents':
             try:
                 folium.Marker(
