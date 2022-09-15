@@ -9,7 +9,6 @@ from data import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = get_env('SECRET_KEY')
 
-
 data_911 = get_data(endpoints.get('emergency', last_3days_911))
 data_crime = get_data(endpoints.get('crime', last_3days_crime))
 data_build = get_data(endpoints.get('build'), last_3k_build)

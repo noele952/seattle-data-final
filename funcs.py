@@ -15,9 +15,10 @@ import boto3
 
 
 def get_env(variable):
-    ssm = boto3.client('ssm')
-    parameter = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
-    return parameter['Parameter']['Value']
+    ssm = boto3.client('ssm', region_name='us-east-1')
+    response = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
+    env = response['Parameter']['Value']
+    return env
 
 
 def contact_form_email(sender, message):
