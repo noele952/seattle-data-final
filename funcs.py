@@ -1,7 +1,7 @@
 import folium
 from folium import plugins
 from shapely.geometry import shape, Point
-from data import icon_data
+from data import *
 from datetime import datetime
 import requests
 import urllib.parse
@@ -10,9 +10,35 @@ from shapely.ops import transform
 from functools import partial
 import pandas as pd
 import plotly.express as px
+import boto3
+from botocore.exceptions import ClientError
+import os
+
+AWS_DEFAULT_REGION = os.environ.get('AWS_DEFAULT_REGION')
 
 
-AWS_DEFAULT_REGION = 'us-east-1'
+def create_sns_message(email, message):
+    message = email + '\n' + message
+    return message
+
+
+def publish_sns_message(topic_arn, message):
+    """
+    Publishes a message to a topic.
+    """
+    sns = boto3.client('sns', region_name=AWS_DEFAULT_REGION)
+    subject = 'Seattle 911 Contact Form'
+    try:
+
+        response = sns.publish(
+            TopicArn=topic_arn,
+            Message=message,
+            Subject=subject,
+        )['MessageId']
+    except ClientError as err:
+        print(err)
+    else:
+        return response
 
 
 def create_neighborhood_list(geojson):
@@ -55,8 +81,7 @@ def create_marker_text_911(item):
              f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
              f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
              f"<p style='font-size:10px;'>Incident # {item.get('incident_number')}</p>"
-    except:
-        print("except")
+    except KeyError:
         text = ''
     return text
 
@@ -70,8 +95,7 @@ def create_marker_text_crime(item):
              f"<p style='font-size:10px;'>Report # {item.get('report_number')}</p>" \
              f"<p style='font-size:10px;'>Offense ID {item.get('offense_id')}</p>" \
              f"<p style='font-size:10px;'>{item.get('_100_block_address')}</p>"
-    except:
-        print("except")
+    except KeyError:
         text = ''
     return text
 
@@ -83,8 +107,7 @@ def create_marker_text_build(item):
          f"<p>{item.get('description')}</p>" \
          f"<p style='font-size:10px;'><a href={item.get('link', {}).get('url', None)} " \
                f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>"
-    except:
-        print("except")
+    except KeyError:
         text = ''
     return text
 
@@ -98,8 +121,7 @@ def create_marker_landuse(item):
                f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>" \
              f"<p>Contractor<p>" \
              f"<p>{item.get('contractorcompanyname')}</p>"
-    except:
-        print("except")
+    except KeyError:
         text = ''
     return text
 
@@ -115,8 +137,7 @@ def create_marker_violations(item):
             text = "<p>Date of Complaint:</p>" \
                    f"<p>{item.get('opendate')}</p>" \
                    f"<p>{item.get('description')}</p>"
-    except:
-        print("except")
+    except KeyError:
         text = ''
     return text
 
@@ -171,7 +192,6 @@ def address_circle_poly(lon, lat, radius=805):
     buffer = point_transformed.buffer(radius)
     # Get the polygon with lat lon coordinates
     circle_poly = transform(aeqd_to_wgs84, buffer)
-    print(type(circle_poly))
     return circle_poly
 
 
@@ -189,15 +209,12 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
     else:
         for feature in geojson:
             if feature['properties']['name'] == neighborhood:
-                try:
-                    center_lat = shape(feature["geometry"]).buffer(0).centroid.y
-                    center_lon = shape(feature["geometry"]).buffer(0).centroid.x
-                    m = folium.Map(location=[center_lat,
-                                   center_lon],
-                                   zoom_start=15)
-                    folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
-                except:
-                    print("error")
+                center_lat = shape(feature["geometry"]).buffer(0).centroid.y
+                center_lon = shape(feature["geometry"]).buffer(0).centroid.x
+                m = folium.Map(location=[center_lat,
+                               center_lon],
+                               zoom_start=15)
+                folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
     for item in data:
         icon_color, icon_img = get_marker_color_icon(type_func(item))
         if incident == 'All Incidents':
@@ -207,8 +224,8 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                     popup=marker_func(item),
                     icon=folium.Icon(color=icon_color, icon=icon_img, prefix='fa')
                     ).add_to(m)
-            except:
-                print("error")
+            except KeyError:
+                pass
         else:
             if type_func(item) == incident:
                 try:
@@ -217,8 +234,8 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                           popup=marker_func(item),
                           icon=folium.Icon(color=icon_color, icon=icon_img, prefix='fa'),
                           ).add_to(m)
-                except:
-                    print("error")
+                except KeyError:
+                    pass
     return m
 
 
@@ -230,31 +247,26 @@ def generate_heatmap(neighborhood, incident, data, geojson, type_func):
             try:
                 new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
                 point_list.append(new_point)
-            except:
-                print("error")
+            except KeyError:
+                pass
     else:
         for item in data:
             if type_func(item) == incident:
                 try:
                     new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
                     point_list.append(new_point)
-                except:
-                    print("error")
+                except KeyError:
+                    pass
     if neighborhood != 'Entire City':
         for feature in geojson:
             if feature['properties']['name'] == neighborhood:
-                try:
-                    center_lat = shape(feature["geometry"]).buffer(0).centroid.y
-                    center_lon = shape(feature["geometry"]).buffer(0).centroid.x
-                    m = folium.Map(location=[center_lat,
-                                             center_lon],
-                                   zoom_start=15)
-                    folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
-                except:
-                    print("error")
-
+                center_lat = shape(feature["geometry"]).buffer(0).centroid.y
+                center_lon = shape(feature["geometry"]).buffer(0).centroid.x
+                m = folium.Map(location=[center_lat,
+                                         center_lon],
+                               zoom_start=15)
+                folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
     heat_data = [[point.xy[1][0], point.xy[0][0]] for point in point_list]
-    print(heat_data)
     plugins.HeatMap(heat_data).add_to(m)
     return m
 
@@ -263,16 +275,7 @@ def generate_911_sunburst(data_911):
     """Generates sunburst graph and stores it in static file"""
     incident_df = pd.DataFrame(data_911)
     df = incident_df.type.value_counts().rename_axis('incident').reset_index(name='counts')
-    fire_list = ['Automatic Fire Alarm Resd', 'Auto Fire Alarm', 'Bark Fire', 'Brush Fire Freeway', 'Car Fire',
-                 'Fire in Building', 'Rubbish Fire', 'Brush Fire', 'Dumpster Fire', 'Illegal Burn',
-                 'Encampment Fire',
-                 'Automatic Fire Alarm False', ]
-    medical_list = ['Triaged Incident', 'Nurseline/AMR', 'Aid Response', 'Mutual Aid- Aid', 'BC Aid Response',
-                    'Aid Response Yellow', 'Medic Response- Overdose', 'Medic Response- 6 per Rule',
-                    'Single Medic Unit',
-                    'BC Medic Response- 6 per rule', 'Medic Response', 'Medic Response- 7 per Rule']
-    police_list = ['Scenes Of Violence 7', '4RED - 2 + 1 + 1', 'MVI - Motor Vehicle Incident', 'Encampment Aid',
-                   '1RED 1 Unit', 'AFA4 - Auto Alarm 2 + 1 + 1', 'MVI Freeway']
+
     incident_type_list = []
     for incident in df.incident:
         if incident in fire_list:
@@ -325,8 +328,8 @@ def generate_build_sunburst(data_build):
     try:
         for item in data_build:
             permitclassmapped_dict[item['permitclass']] = item['permitclassmapped']
-    except:
-        print("error")
+    except KeyError:
+        pass
     parent_group = [permitclassmapped_dict.get(series.permitclass) for index, series in df.iterrows()]
     df['permitclassmapped'] = parent_group
     fig = px.sunburst(df, path=['permitclassmapped', 'permitclass'], values='counts',

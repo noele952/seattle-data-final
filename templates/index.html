@@ -40,7 +40,7 @@
 </p>
 <ul class="features" style="padding-top:2em; padding-bottom:2em;">
 	<li>
-		<span class="icon solid major style1 fa-heartbeat"></span>
+		<img src="{{ url_for('static', filename='/images/kindpng_1108202.png') }}" height="250">
 		<h3 style="font-weight:bold;">Emergency Events</h3>
 		<p style="padding-top:1em; padding-bottom:1em">From medical emergencies, to fire events, gas leaks, and rescue situations. What's the emergency in your neighborhood </p>
 		<a href="{{ url_for('emergency') }}" class="button button-front" style="background-color:#008CBA; color:white;">Emergency Events</a></li>
@@ -53,18 +53,18 @@
 			<a href="{{ url_for('crime') }}" class="button button-front" style="background-color:#008CBA; color:white;">Crime Activity</a></li>
 
 		<li>
-			<span class="icon major style5 fa-building"></span>
+			<img src="{{ url_for('static', filename='/images/wood-cabin.jpg') }}" height="250">
 			<h3 style="font-weight:bold;">What's being built?</h3>
 			<p style="padding-top:1em; padding-bottom:1em">What's being built in your neighborhood? Information about issued building permits, land use actions, and more.</p>
 
 			<a href="{{ url_for('build') }}" class="button button-front" style="background-color:#008CBA; color:white;">Building</a>
 
 		</li>
-
+</ul>
 </div>
 
 {% else %}
-<div id="map-pos" class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div  class="container-md" style="width:80%; margin:auto; text-align:center;">
 <h1 style="font-weight:bold; margin:.2em;">Emergency Incidents</h1>
   {{ map1 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is
@@ -81,7 +81,7 @@
 
 
 
- <div id="map-pos" class="container-md" style="width:80%; margin:auto; text-align:center;">
+ <div class="container-md" style="width:80%; margin:auto; text-align:center;">
 <h1 style="font-weight:bold; margin:.2em;">Criminal Activity</h1>
   {{ map2 | safe }}
 	 <h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is
@@ -96,7 +96,7 @@
  	</div>
 
 
-<div id="map-pos" class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div class="container-md" style="width:80%; margin:auto; text-align:center;">
 <h1 style="font-weight:bold; margin:.2em;">What's Being Built?</h1>
   {{ map3 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Building activity data based on currently issued building permits.
@@ -105,7 +105,7 @@
 
 </div>
 
-<div id="map-pos" class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div class="container-md" style="width:80%; margin:auto; text-align:center;">
 <h1 style="font-weight:bold; margin:.2em;">What's Going to be Being Built?</h1>
   {{ map4 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Current land use proposals for future construction projects registered

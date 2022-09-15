@@ -5,10 +5,15 @@ from flask_wtf import FlaskForm
 import json
 from funcs import *
 from data import *
-
+import boto3
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "SECRET_KEY"
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
+sns = boto3.resource('sns')
+TOPIC_ARN = os.environ.get('TOPIC_ARN')
+
 
 data_911 = get_data(endpoints.get('emergency', last_3days_911))
 data_crime = get_data(endpoints.get('crime', last_3days_crime))
@@ -71,8 +76,8 @@ def contact():
     form = ContactForm()
     if form.validate_on_submit():
         pass
-        # message = create_sns_message(form.email.data, form.content.data)
-        # publish_sns_message(topic, message)
+        message = create_sns_message(form.email.data, form.content.data)
+        publish_sns_message(TOPIC_ARN, message)
     return redirect(url_for(session['page']))
 
 
@@ -202,7 +207,6 @@ def build():
     m2 = generate_heatmap('Entire City', 'All Incidents', data_build, geojson, incident_type_build)
     m2 = m2._repr_html_()
     return render_template('build.html', form=form, map=m, map2=m2, map3=m3)
-
 
 
 if __name__ == '__main__':
