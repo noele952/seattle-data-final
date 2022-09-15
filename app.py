@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, send_from_directory, redirect, url_for
+from flask import Flask, session, render_template, redirect, url_for
 from wtforms import SubmitField, StringField, TextAreaField
 from wtforms.validators import DataRequired, length, Email
 from flask_wtf import FlaskForm
@@ -6,7 +6,10 @@ import json
 from funcs import *
 from data import *
 import requests
+import boto3
 
+sns = boto3.resource('sns')
+topic = 'arn:aws:sns:us-east-1:643020469822:Seattle-911-message'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "SECRET_KEY"
@@ -42,9 +45,9 @@ def inject():
 @app.route("/contact", methods=["POST"])
 def contact():
     form = ContactForm()
-    # if form.validate_on_submit():
-    #     message = create_sns_message(form.email.data, form.content.data)
-    #     publish_sns_message(topic, message)
+    if form.validate_on_submit():
+        message = create_sns_message(form.email.data, form.content.data)
+        publish_sns_message(topic, message)
     return redirect(url_for(session['page']))
 
 

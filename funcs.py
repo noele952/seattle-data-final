@@ -7,6 +7,34 @@ import urllib.parse
 import pyproj
 from shapely.ops import transform
 from functools import partial
+import boto3
+from botocore.exceptions import ClientError
+
+AWS_DEFAULT_REGION = 'us-east-1'
+
+
+def create_sns_message(email, message):
+    message = email + '\n' + message
+    return message
+
+
+def publish_sns_message(topic_arn, message):
+    """
+    Publishes a message to a topic.
+    """
+    sns = boto3.client('sns', region_name=AWS_DEFAULT_REGION)
+    subject = 'Seattle 911 Contact Form'
+    try:
+
+        response = sns.publish(
+            TopicArn=topic_arn,
+            Message=message,
+            Subject=subject,
+        )['MessageId']
+    except ClientError as err:
+        print(err)
+    else:
+        return response
 
 
 def address_lat_lon(address):
