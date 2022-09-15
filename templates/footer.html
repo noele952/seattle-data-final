@@ -4,7 +4,37 @@
 
 
 					<p style="color:black;">We would love to hear from you</p>
-
+<form method="POST" action="{{url_for('contact')}}">
+                                {{ form.csrf_token }}
+    <div class="form-group" style="padding:.5em 2em 2em 2em;">
+        {{ contact_form.email.label }}
+        {% if contact_form.email.errors %}
+            {{ contact_form.email(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ contact_form.email(class="form-control form-control-lg") }}
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {% if contact_form.content.errors %}
+            {{ contact_form.content(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in contact_form.content.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ contact_form.content(class="form-control form-control-lg") }}
+        {% endif %}
+    </div>
+    <div class="form-group" style="padding:2em;">
+        {{ contact_form.submit(class="btn btn-outline-info") }}
+    </div>
+</form>
 <ul class="icons">
 						<li><a href="https://twitter.com/noeldoesdefi" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
 						<li><a href="https://www.facebook.com/noel.alderman" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>

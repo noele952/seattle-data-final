@@ -1,11 +1,12 @@
-from flask import Flask, session, render_template
-from wtforms import SubmitField, StringField
-from wtforms.validators import DataRequired, length
+from flask import Flask, session, render_template, send_from_directory, redirect, url_for
+from wtforms import SubmitField, StringField, TextAreaField
+from wtforms.validators import DataRequired, length, Email
 from flask_wtf import FlaskForm
 import json
 from funcs import *
 from data import *
 import requests
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "SECRET_KEY"
@@ -22,6 +23,29 @@ class AddressForm(FlaskForm):
     city = StringField("City", validators=[DataRequired(), length(min=2, max=100)])
     state = StringField("State", validators=[DataRequired(), length(min=2, max=2)])
     submit = SubmitField("Submit")
+
+
+class ContactForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    content = TextAreaField("Message", render_kw={"rows": 3, "cols": 100}, validators=[DataRequired(),
+                                                                                       length(min=2, max=5000)])
+    submit = SubmitField("Send Message")
+
+
+@app.context_processor
+def inject():
+    return dict(
+        contact_form=ContactForm()
+    )
+
+
+@app.route("/contact", methods=["POST"])
+def contact():
+    form = ContactForm()
+    # if form.validate_on_submit():
+    #     message = create_sns_message(form.email.data, form.content.data)
+    #     publish_sns_message(topic, message)
+    return redirect(url_for(session['page']))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -57,6 +81,13 @@ def index():
         m5 = m5._repr_html_()
         return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5)
     return render_template('index.html', form=form)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico',
+                               mimetype='image/vnd.microsoft.icon')
 
 
 if __name__ == '__main__':

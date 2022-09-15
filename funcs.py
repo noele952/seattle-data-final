@@ -1,9 +1,12 @@
 import folium
-from shapely.geometry import shape
+from shapely.geometry import shape, Point
 from data import icon_data
 from datetime import datetime
 import requests
 import urllib.parse
+import pyproj
+from shapely.ops import transform
+from functools import partial
 
 
 def address_lat_lon(address):
@@ -123,6 +126,30 @@ def get_marker_color_icon(item):
     return color, icon
 
 
+def address_circle_poly(lon, lat, radius=805):
+    local_azimuthal_projection = "+proj=aeqd +R=6371000 +units=m +lat_0={} +lon_0={}".format(
+        lat, lon
+    )
+    wgs84_to_aeqd = partial(
+        pyproj.transform,
+        pyproj.Proj("+proj=longlat +datum=WGS84 +no_defs"),
+        pyproj.Proj(local_azimuthal_projection),
+    )
+    aeqd_to_wgs84 = partial(
+        pyproj.transform,
+        pyproj.Proj(local_azimuthal_projection),
+        pyproj.Proj("+proj=longlat +datum=WGS84 +no_defs"),
+    )
+
+    center = Point(float(lon), float(lat))
+    point_transformed = transform(wgs84_to_aeqd, center)
+    buffer = point_transformed.buffer(radius)
+    # Get the polygon with lat lon coordinates
+    circle_poly = transform(aeqd_to_wgs84, buffer)
+    print(type(circle_poly))
+    return circle_poly
+
+
 def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                location=(47.608, -122.335), zoom_start=12):
     m = folium.Map(location=location, zoom_start=zoom_start)
@@ -131,6 +158,7 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
             location=location,
             icon=folium.Icon(color='red', icon='dot-circle-o', prefix='fa')
         ).add_to(m)
+        folium.GeoJson(address_circle_poly(location[1], location[0]), name='geojson').add_to(m)
     if neighborhood == 'Entire City':
         m = folium.Map(location=location, zoom_start=zoom_start)
     else:
