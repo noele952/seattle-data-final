@@ -7,7 +7,7 @@ from funcs import *
 from data import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SECRET KEY'
+app.config['SECRET_KEY'] = get_env('SECRET_KEY')
 
 
 data_911 = get_data(endpoints.get('emergency', last_3days_911))

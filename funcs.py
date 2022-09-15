@@ -11,16 +11,22 @@ from functools import partial
 import pandas as pd
 import plotly.express as px
 import smtplib
+import boto3
 
-MY_EMAIL = "MY_EMAIL"
-MY_EMAIL_PASSWORD = "MY_EMAIL_PASSWORD"
+
+def get_env(variable):
+    ssm = boto3.client('ssm')
+    parameter = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
+    return parameter['Parameter']['Value']
 
 
 def contact_form_email(sender, message):
+    email = get_env('MY_EMAIL')
+    email_password = get_env('MY_EMAIL_PASSWORD')
     with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
         connection.starttls()
-        connection.login(user=MY_EMAIL, password=MY_EMAIL_PASSWORD)
-        connection.sendmail(MY_EMAIL, MY_EMAIL, sender + '\n' + message)
+        connection.login(user=email, password=email_password)
+        connection.sendmail(email, email, sender + '\n' + message)
     return 1
 
 
@@ -64,7 +70,8 @@ def create_marker_text_911(item):
              f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%b %d %Y')}</p>" \
              f"<p>{datetime.strptime(item.get('datetime'), '%Y-%m-%dT%X.%f').strftime('%I:%M %p')}</p>" \
              f"<p style='font-size:10px;'>Incident # {item.get('incident_number')}</p>"
-    except KeyError:
+    except (ValueError, KeyError, TypeError) as error:
+        print(error)
         text = ''
     return text
 
@@ -78,7 +85,8 @@ def create_marker_text_crime(item):
              f"<p style='font-size:10px;'>Report # {item.get('report_number')}</p>" \
              f"<p style='font-size:10px;'>Offense ID {item.get('offense_id')}</p>" \
              f"<p style='font-size:10px;'>{item.get('_100_block_address')}</p>"
-    except KeyError:
+    except (ValueError, KeyError, TypeError) as error:
+        print(error)
         text = ''
     return text
 
@@ -90,7 +98,8 @@ def create_marker_text_build(item):
          f"<p>{item.get('description')}</p>" \
          f"<p style='font-size:10px;'><a href={item.get('link', {}).get('url', None)} " \
                f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>"
-    except KeyError:
+    except (ValueError, KeyError, TypeError) as error:
+        print(error)
         text = ''
     return text
 
@@ -104,7 +113,8 @@ def create_marker_landuse(item):
                f"target='_blank'>{item.get('link', {}).get('url', None)}</a></p>" \
              f"<p>Contractor<p>" \
              f"<p>{item.get('contractorcompanyname')}</p>"
-    except KeyError:
+    except (ValueError, KeyError, TypeError) as error:
+        print(error)
         text = ''
     return text
 
@@ -120,7 +130,8 @@ def create_marker_violations(item):
             text = "<p>Date of Complaint:</p>" \
                    f"<p>{item.get('opendate')}</p>" \
                    f"<p>{item.get('description')}</p>"
-    except KeyError:
+    except (ValueError, KeyError, TypeError)as error:
+        print(error)
         text = ''
     return text
 
@@ -207,8 +218,8 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                     popup=marker_func(item),
                     icon=folium.Icon(color=icon_color, icon=icon_img, prefix='fa')
                     ).add_to(m)
-            except KeyError:
-                pass
+            except (ValueError, KeyError, TypeError) as error:
+                print(error)
         else:
             if type_func(item) == incident:
                 try:
@@ -217,8 +228,8 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                           popup=marker_func(item),
                           icon=folium.Icon(color=icon_color, icon=icon_img, prefix='fa'),
                           ).add_to(m)
-                except KeyError:
-                    pass
+                except (ValueError, KeyError, TypeError) as error:
+                    print(error)
     return m
 
 
@@ -230,16 +241,16 @@ def generate_heatmap(neighborhood, incident, data, geojson, type_func):
             try:
                 new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
                 point_list.append(new_point)
-            except KeyError:
-                pass
+            except (ValueError, KeyError, TypeError) as error:
+                print(error)
     else:
         for item in data:
             if type_func(item) == incident:
                 try:
                     new_point = Point(float(item.get('longitude')), float(item.get('latitude')))
                     point_list.append(new_point)
-                except KeyError:
-                    pass
+                except (ValueError, KeyError, TypeError) as error:
+                    print(error)
     if neighborhood != 'Entire City':
         for feature in geojson:
             if feature['properties']['name'] == neighborhood:
@@ -311,8 +322,8 @@ def generate_build_sunburst(data_build):
     try:
         for item in data_build:
             permitclassmapped_dict[item['permitclass']] = item['permitclassmapped']
-    except KeyError:
-        pass
+    except (ValueError, KeyError, TypeError) as error:
+        print(error)
     parent_group = [permitclassmapped_dict.get(series.permitclass) for index, series in df.iterrows()]
     df['permitclassmapped'] = parent_group
     fig = px.sunburst(df, path=['permitclassmapped', 'permitclass'], values='counts',
