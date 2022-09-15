@@ -10,8 +10,18 @@ from shapely.ops import transform
 from functools import partial
 import pandas as pd
 import plotly.express as px
+import smtplib
 
-AWS_DEFAULT_REGION = 'us-east-1'
+MY_EMAIL = "MY_EMAIL"
+MY_EMAIL_PASSWORD = "MY_EMAIL_PASSWORD"
+
+
+def contact_form_email(sender, message):
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        connection.starttls()
+        connection.login(user=MY_EMAIL, password=MY_EMAIL_PASSWORD)
+        connection.sendmail(MY_EMAIL, MY_EMAIL, sender + '\n' + message)
+    return 1
 
 
 def create_neighborhood_list(geojson):

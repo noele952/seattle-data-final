@@ -9,9 +9,6 @@ from data import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SECRET KEY'
 
-# sns = boto3.resource('sns')
-# TOPIC_ARN = os.environ.get('TOPIC_ARN')
-
 
 data_911 = get_data(endpoints.get('emergency', last_3days_911))
 data_crime = get_data(endpoints.get('crime', last_3days_crime))
@@ -64,18 +61,16 @@ class ContactForm(FlaskForm):
 
 @app.context_processor
 def inject():
-    return dict(
-        contact_form=ContactForm()
-    )
+    return dict(contact_form=ContactForm())
 
 
 @app.route("/contact", methods=["POST"])
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        pass
-        # message = create_sns_message(form.email.data, form.content.data)
-        # publish_sns_message(TOPIC_ARN, message)
+        sender = form.email.data
+        message = form.content.data
+        contact_form_email(sender, message)
     return redirect(url_for(session['page']))
 
 
@@ -208,4 +203,4 @@ def build():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
