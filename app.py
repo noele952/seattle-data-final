@@ -5,14 +5,12 @@ from flask_wtf import FlaskForm
 import json
 from funcs import *
 from data import *
-import boto3
-import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = 'SECRET KEY'
 
-sns = boto3.resource('sns')
-TOPIC_ARN = os.environ.get('TOPIC_ARN')
+# sns = boto3.resource('sns')
+# TOPIC_ARN = os.environ.get('TOPIC_ARN')
 
 
 data_911 = get_data(endpoints.get('emergency', last_3days_911))
@@ -76,8 +74,8 @@ def contact():
     form = ContactForm()
     if form.validate_on_submit():
         pass
-        message = create_sns_message(form.email.data, form.content.data)
-        publish_sns_message(TOPIC_ARN, message)
+        # message = create_sns_message(form.email.data, form.content.data)
+        # publish_sns_message(TOPIC_ARN, message)
     return redirect(url_for(session['page']))
 
 
