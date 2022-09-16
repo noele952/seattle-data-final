@@ -14,16 +14,16 @@ import smtplib
 import boto3
 
 
-def get_env(variable):
-    ssm = boto3.client('ssm', region_name='us-east-1')
-    response = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
-    env = response['Parameter']['Value']
-    return env
+# def get_env(variable):
+#     ssm = boto3.client('ssm', region_name='us-east-1')
+#     response = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
+#     env = response['Parameter']['Value']
+#     return env
 
 
 def contact_form_email(sender, message):
-    email = get_env('MY_EMAIL')
-    email_password = get_env('MY_EMAIL_PASSWORD')
+    email = 'MY_EMAIL'
+    email_password = 'MY_EMAIL_PASSWORD'
     with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
         connection.starttls()
         connection.login(user=email, password=email_password)
