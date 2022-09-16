@@ -6,6 +6,7 @@ import json
 from funcs import *
 from data import *
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SECRET KEY'
 

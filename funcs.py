@@ -13,7 +13,7 @@ import plotly.express as px
 import smtplib
 import boto3
 
-
+ 
 # def get_env(variable):
 #     ssm = boto3.client('ssm', region_name='us-east-1')
 #     response = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
