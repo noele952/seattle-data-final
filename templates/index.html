@@ -8,27 +8,26 @@
 <div style="text-align:center; width:50%; margin:auto;">
 	<br>
 	<h2 style="font-weight:bold; margin:0;">Enter your Seattle address to find out what's happening in your neighborhood</h2>
-
+<h4 style="font-size:14px">click the links above to find all the latest <b>911</b> Emergency Incidents, <b>Crime</b> reports, current
+	<b>Construction</b> activity, or reported Code <b>Violations</b> </h4>
 <h3>(street address only do not include city, state or zip)</h3>
 
-								<div style="position:relative; width:400px; margin:auto;">
+
 									{% if error %}
     <p class=error style="color:red;"> {{ error }}
   {% endif %}
-	<form class="form-inline" style="text-align:left;" method="POST" action="{{ url_for('index') }}">
+	<form class="form-inline" method="POST" action="{{ url_for('index') }}">
 		{{ form.csrf_token }}
-  <div class="col-sm-4" style="padding-right:2px; width:400px; height:30px;  margin:auto;">
-    {{form.address() }}
-  </div>
-
-<div class="col-sm-4" style="width:192px; margin:auto; padding-top:.5em;">
-  {{form.submit(style="background-color:#008CBA; color:white;") }}
+  <div class="col-sm-4" style="padding-right:2px; height:30px;  margin:auto;">
+    {{form.address(style="width:100%; margin:auto; ") }}
+<br>
+  {{form.submit(style="background-color:#008CBA; color:white; margin:auto; ") }}
 
 </div>
 
 </form>
 
-</div>
+
     <br>
 <p style="padding:1.5em;"> We us the latest data, provide by <a href="https://data.seattle.gov/">Seattle Open Data</a>, to show you what's
 	happening in and around your area. From emergency incidents,to crime data, new construction, proposed land use
