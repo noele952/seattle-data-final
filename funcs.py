@@ -11,14 +11,6 @@ from functools import partial
 import pandas as pd
 import plotly.express as px
 import smtplib
-import boto3
-
- 
-# def get_env(variable):
-#     ssm = boto3.client('ssm', region_name='us-east-1')
-#     response = ssm.get_parameter(Name='/seattle911/' + variable, WithDecryption=True)
-#     env = response['Parameter']['Value']
-#     return env
 
 
 def contact_form_email(sender, message):
@@ -53,7 +45,10 @@ def create_incident_list(data, type_func):
 def address_lat_lon(address):
     url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) + '?format=json'
     response = requests.get(url).json()
-    return response[0]["lat"], response[0]["lon"]
+    lat = response[0]["lat"]
+    lon = response[0]["lon"]
+
+    return lat, lon
 
 
 def get_data(endpoint, query=''):

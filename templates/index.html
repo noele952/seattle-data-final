@@ -7,24 +7,21 @@
 {% if not session['address'] %}
 <div style="text-align:center; width:50%; margin:auto;">
 	<br>
-	<h2 style="font-weight:bold; padding-bottom:1em;">Enter your address to find out what's happening in your neighborhood</h2>
+	<h2 style="font-weight:bold; margin:0;">Enter your Seattle address to find out what's happening in your neighborhood</h2>
 
-
+<h3>(street address only do not include city, state or zip)</h3>
 
 								<div style="position:relative; width:400px; margin:auto;">
+									{% if error %}
+    <p class=error style="color:red;"> {{ error }}
+  {% endif %}
 	<form class="form-inline" style="text-align:left;" method="POST" action="{{ url_for('index') }}">
 		{{ form.csrf_token }}
   <div class="col-sm-4" style="padding-right:2px; width:400px; height:30px;  margin:auto;">
     {{form.address() }}
   </div>
 
-  <div class="col-sm-4" style="width:100px; padding-right:10px; padding-top:1em; display:inline-block; margin:auto;">
-    {{form.city(value='Seattle') }}
-  </div>
-  <div class="col-sm-4" style="width:100px; padding-right:10px; display: inline-block; margin:auto;">
-    {{form.state(value='WA') }}
-  </div>
-<div class="col-sm-4" style="width:192px; display:inline-block; text-align:right;">
+<div class="col-sm-4" style="width:192px; margin:auto; padding-top:.5em;">
   {{form.submit(style="background-color:#008CBA; color:white;") }}
 
 </div>
@@ -64,7 +61,9 @@
 </div>
 
 {% else %}
+
 <div  class="container-md" style="width:80%; margin:auto; text-align:center;">
+	<a href="{{ url_for('reset') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin:1em; text-align:center;">Reset Address</a>
 <h1 style="font-weight:bold; margin:.2em;">Emergency Incidents</h1>
   {{ map1 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is

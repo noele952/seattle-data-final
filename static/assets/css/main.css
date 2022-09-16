@@ -126,7 +126,7 @@ input, select, textarea {
 
 	body, input, select, textarea {
 		font-family: "Source Sans Pro", Helvetica, sans-serif;
-		font-size: 17pt;
+		font-size: 14pt;
 		font-weight: 300;
 		line-height: 1.65;
 	}
@@ -3791,4 +3791,12 @@ input, select, textarea {
 .button-front:hover {
   background-color: #4CAF50; /* Green */
   color: white;
+}
+
+#submit:hover {
+  border:1px solid #555555
+}
+
+.button:hover {
+  border:1px solid #555555
 }

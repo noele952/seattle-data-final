@@ -13,6 +13,8 @@ app.config['SECRET_KEY'] = 'SECRET KEY'
 data_911 = get_data(endpoints.get('emergency', last_3days_911))
 data_crime = get_data(endpoints.get('crime', last_3days_crime))
 data_build = get_data(endpoints.get('build'), last_3k_build)
+address = ''
+
 
 geojson = 'static/seattle_neighborhoods.geojson'
 with open(geojson) as file:
@@ -47,8 +49,6 @@ class ViolationsBuildForm(FlaskForm):
 
 class AddressForm(FlaskForm):
     address = StringField("Address", validators=[DataRequired(), length(min=10, max=100)])
-    city = StringField("City", validators=[DataRequired(), length(min=2, max=100)])
-    state = StringField("State", validators=[DataRequired(), length(min=2, max=2)])
     submit = SubmitField("Submit")
 
 
@@ -74,15 +74,29 @@ def contact():
     return redirect(url_for(session['page']))
 
 
+@app.route('/address-reset')
+def reset():
+    global address
+    address = ''
+    return redirect(url_for('index'))
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     session['page'] = 'index'
-    session['address'] = ''
+    global address
+    session['address'] = address
     form = AddressForm()
     if form.validate_on_submit():
-        address = form.address.data + ' ' + form.city.data + ', ' + form.state.data
-        address_lat, address_lon = address_lat_lon(address)
-        session['address'] = [float(address_lat), float(address_lon)]
+        try:
+            address = form.address.data + ' Seattle, WA'
+            address_lat, address_lon = address_lat_lon(address)
+            session['address'] = [float(address_lat), float(address_lon)]
+            address = session['address']
+        except IndexError:
+            error = "That is not a valid address"
+            address = ''
+            return render_template('index.html', form=form, error=error)
     if session['address']:
         global data_911
         data_911 = get_data(endpoints.get('emergency', last_3days_911))
