@@ -1,11 +1,12 @@
-{% include "header.html" %}
+{% extends 'layout.html' %}
+{% block content %}
 
 				<!-- Main -->
 					<div id="main">
 						<!-- Introduction -->
 							<section id="intro" class="main">
 
-								<div id="map-pos" class="container-md" style="width:90%; margin:auto; text-align:center;">
+								<div class="container-md" style="width:90%; margin:auto; text-align:center;">
 									<h1 style="font-weight:bold; margin:.2em;">Code Violations</h1>
 
 									<div style="position:relative; height:30px;">
@@ -23,7 +24,7 @@
 </form>
 </div>
   {{ map | safe }}
-<h3 style="padding:1em 3em; line-height:2em;"> Reported code violation data collected over the last 60 days. See who's not mowing their lawn, who's the neighborhood hoarder, and
+<h3 style="padding:1em; line-height:2em;"> Reported code violation data collected over the last 60 days. See who's not mowing their lawn, who's the neighborhood hoarder, and
 	other even more nefarious deeds. Click on an incident to find out a description of the alleged violation, the report date
 	and more. </h3>
 	</div>
@@ -35,7 +36,7 @@
 
 </div>
 
-	<h3 style="padding:1em 3em; line-height:2em;"> The heatmap data is aggregated from data collected over the last 30 days. The hotter the color, the greater the
+	<h3 style="padding:1em; line-height:2em;"> The heatmap data is aggregated from data collected over the last 30 days. The hotter the color, the greater the
 	activity. Use the map or your mouse controls to scroll and zoom. The heatmap will be adjusted to show local
 	patterns as your distance settings change</h3>
 	</div>
@@ -55,13 +56,19 @@
 										the actual incident count.</p>
 									</li>
 									<li>
-										<iframe class="image" style="width:600px; height:600px" src="{{ url_for('static', filename='/sunburst_crime.html') }}" ></iframe>
+										<iframe class="image sunburst" src="{{ url_for('static', filename='/sunburst_crime.html') }}" ></iframe>
 									</li>
 
 								</ul>
 								<footer class="major">
 									<ul class="actions special">
 										<li><a href="{{ url_for('static', filename='/sunburst_crime.html') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Full Screen Sunburst Graph</a></li>
+									</ul>
+									</ul>
+
+									<ul class="actions special">
+										<li><a href="{{ url_for('index') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Home</a></li>
+
 									</ul>
 								</footer>
 							</section>
@@ -106,4 +113,4 @@
 					</div>
 
 				<!-- Footer -->
-{% include "footer.html" %}
+{% endblock %}

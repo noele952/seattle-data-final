@@ -137,6 +137,8 @@ input, select, textarea {
 				font-size: 14pt;
 			}
 
+
+
 		}
 
 		@media screen and (max-width: 1280px) {
@@ -290,9 +292,31 @@ input, select, textarea {
 			margin: 3em 0;
 		}
 
+    .address-box {
+      text-align:center;
+      width:50%;
+      margin:auto;
+    }
+
+    .active {
+        background-color:#008CBA;
+        color:white;
+        font-weight:bold;
+        border-radius:8px;
+    }
+
 	.align-left {
 		text-align: left;
 	}
+
+    .sunburst {
+        width:600px;
+        height:600px;
+    }
+
+    .topnav .icon {
+        display: none;
+    }
 
 	.align-center {
 		text-align: center;
@@ -301,6 +325,10 @@ input, select, textarea {
 	.align-right {
 		text-align: right;
 	}
+
+    .button-div {
+        width:39%;
+    }
 
 	input, select, textarea {
 		color: #ffffff;
@@ -583,6 +611,10 @@ input, select, textarea {
 				align-items: stretch;
 			}
 
+                .address-box {
+		        width:60%;
+		        }
+
 				.row > * {
 					box-sizing: border-box;
 				}
@@ -828,9 +860,18 @@ input, select, textarea {
 				align-items: stretch;
 			}
 
+                .address-box {
+		        width:70%;
+		        }
+
 				.row > * {
 					box-sizing: border-box;
 				}
+
+                .sunburst {
+                    width:450px;
+                    height:450px;
+                }
 
 				.row.gtr-uniform > * > :last-child {
 					margin-bottom: 0;
@@ -1072,6 +1113,18 @@ input, select, textarea {
 				box-sizing: border-box;
 				align-items: stretch;
 			}
+                .address-box {
+		        width:80%;
+		        }
+
+                .button-div {
+                     width:60%;
+                }
+
+                .sunburst {
+                    width:325px;
+                    height:325px;
+                }
 
 				.row > * {
 					box-sizing: border-box;
@@ -1307,6 +1360,7 @@ input, select, textarea {
 							padding-top: 3em;
 						}
 
+
 		}
 
 		@media screen and (max-width: 736px) {
@@ -1317,6 +1371,18 @@ input, select, textarea {
 				box-sizing: border-box;
 				align-items: stretch;
 			}
+			    .sunburst {
+                    width:390px;
+                    height:390px;
+                }
+
+                .address-box {
+		        width:100%;
+		        }
+
+                .button-div {
+                     width:80%;
+                }
 
 				.row > * {
 					box-sizing: border-box;
@@ -1562,6 +1628,14 @@ input, select, textarea {
 				box-sizing: border-box;
 				align-items: stretch;
 			}
+                .sunburst {
+                    width:300px;
+                    height:300px;
+                }
+
+                .address-box {
+		        width:90%;
+		        }
 
 				.row > * {
 					box-sizing: border-box;
@@ -3788,10 +3862,7 @@ input, select, textarea {
   transition-duration: 0.4s;
 }
 
-.button-front:hover {
-  background-color: #4CAF50; /* Green */
-  color: white;
-}
+
 
 #submit:hover {
   border:1px solid #555555
@@ -3800,3 +3871,5 @@ input, select, textarea {
 .button:hover {
   border:1px solid #555555
 }
+
+

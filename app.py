@@ -96,7 +96,7 @@ def index():
         except IndexError:
             error = "That is not a valid address"
             address = ''
-            return render_template('index.html', form=form, error=error)
+            return render_template('index.html', form=form, error=error, active='home')
     if session['address']:
         global data_911
         data_911 = get_data(endpoints.get('emergency', last_3days_911))
@@ -122,8 +122,8 @@ def index():
                         incident_type_violations,
                         location=session['address'], zoom_start=15)
         m5 = m5._repr_html_()
-        return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5)
-    return render_template('index.html', form=form)
+        return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5, active='home')
+    return render_template('index.html', form=form, active='home')
 
 
 @app.route('/emergency', methods=['GET', 'POST'])
@@ -140,12 +140,12 @@ def emergency():
         m = m._repr_html_()
         m2 = generate_heatmap('Entire City', 'All Incidents', data_911, geojson, incident_type_911)
         m2 = m2._repr_html_()
-        return render_template('emergency.html', form=form, map=m, map2=m2)
+        return render_template('emergency.html', form=form, map=m, map2=m2, active='emergency')
     m = create_map('Entire City', 'All Incidents', data_911, geojson, create_marker_text_911, incident_type_911)
     m = m._repr_html_()
     m2 = generate_heatmap('Entire City', 'All Incidents', data_911, geojson, incident_type_911)
     m2 = m2._repr_html_()
-    return render_template('emergency.html', form=form, map=m, map2=m2)
+    return render_template('emergency.html', form=form, map=m, map2=m2, active='emergency')
 
 
 @app.route('/crime', methods=['GET', 'POST'])
@@ -161,12 +161,12 @@ def crime():
         m = m._repr_html_()
         m2 = generate_heatmap('Entire City', 'All Incidents', data_911, geojson, incident_type_911)
         m2 = m2._repr_html_()
-        return render_template('crime.html', form=form, map=m, map2=m2)
+        return render_template('crime.html', form=form, map=m, map2=m2, active='crime')
     m = create_map('Entire City', 'All Incidents', data_crime, geojson, create_marker_text_crime, incident_type_crime)
     m = m._repr_html_()
     m2 = generate_heatmap('Entire City', 'All Incidents', data_crime, geojson, incident_type_crime)
     m2 = m2._repr_html_()
-    return render_template('crime.html', form=form, map=m, map2=m2)
+    return render_template('crime.html', form=form, map=m, map2=m2, active='crime')
 
 
 @app.route('/violations', methods=['GET', 'POST'])
@@ -179,11 +179,11 @@ def violations():
         m = create_map(form.neighborhood.data, 'All Incidents', data_violations, geojson, create_marker_violations,
                        incident_type_violations)
         m = m._repr_html_()
-        return render_template('violations.html', form=form, map=m)
+        return render_template('violations.html', form=form, map=m, active='violations')
     m = create_map('Entire City', 'All Incidents', data_violations, geojson, create_marker_violations,
                    incident_type_violations)
     m = m._repr_html_()
-    return render_template('violations.html', form=form, map=m)
+    return render_template('violations.html', form=form, map=m, active='violations')
 
 
 @app.route('/build', methods=['GET', 'POST'])
@@ -204,7 +204,7 @@ def build():
         m2 = generate_heatmap('Entire City', 'All Incidents', data_build, geojson,
                               incident_type_build)
         m2 = m2._repr_html_()
-        return render_template('build.html', form=form, map=m, map2=m2, map3=m3)
+        return render_template('build.html', form=form, map=m, map2=m2, map3=m3, active='build')
     m = create_map('Entire City', 'All Incidents', data_build, geojson, create_marker_text_build, incident_type_build)
     m = m._repr_html_()
 
@@ -213,7 +213,7 @@ def build():
     m3 = m3._repr_html_()
     m2 = generate_heatmap('Entire City', 'All Incidents', data_build, geojson, incident_type_build)
     m2 = m2._repr_html_()
-    return render_template('build.html', form=form, map=m, map2=m2, map3=m3)
+    return render_template('build.html', form=form, map=m, map2=m2, map3=m3, active='build')
 
 
 if __name__ == '__main__':

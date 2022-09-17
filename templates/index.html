@@ -1,11 +1,12 @@
-{% include "header.html" %}
+{% extends 'layout.html' %}
+{% block content %}
 
 				<!-- Main -->
 					<div id="main">
 						<!-- Introduction -->
 							<section id="intro" class="main">
 {% if not session['address'] %}
-<div style="text-align:center; width:50%; margin:auto;">
+<div class="address-box" >
 	<br>
 	<h2 style="font-weight:bold; margin:0;">Enter your Seattle address to find out what's happening in your neighborhood</h2>
 <h4 style="font-size:14px">click the links above to find all the latest <b>911</b> Emergency Incidents, <b>Crime</b> reports, current
@@ -19,7 +20,7 @@
 	<form class="form-inline" method="POST" action="{{ url_for('index') }}">
 		{{ form.csrf_token }}
   <div class="col-sm-4" style="padding-right:2px; height:30px;  margin:auto;">
-    {{form.address(style="width:100%; margin:auto; ") }}
+    {{form.address(style="width:60%; margin:auto; ") }}
 <br>
   {{form.submit(style="background-color:#008CBA; color:white; margin:auto; ") }}
 
@@ -56,19 +57,26 @@
 			<a href="{{ url_for('build') }}" class="button button-front" style="background-color:#008CBA; color:white;">Building</a>
 
 		</li>
+		<li>
+		<img src="{{ url_for('static', filename='/images/500x500Whistle-clipart.jpg') }}" height="250">
+		<h3 style="font-weight:bold;">Code Violations</h3>
+		<p style="padding-top:1em; padding-bottom:1em">Find out who's not mowing their lawn, and other nefarious deeds. Current reported code violations, mapped to your neighborhood. With more information, including links
+		to the official complaint</p>
+		<a href="{{ url_for('violations') }}" class="button button-front" style="background-color:#008CBA; color:white;">Code Violations</a>
+		</li>
 </ul>
 </div>
 
 {% else %}
 
-<div  class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div class="container-md address-box">
 	<a href="{{ url_for('reset') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin:1em; text-align:center;">Reset Address</a>
 <h1 style="font-weight:bold; margin:.2em;">Emergency Incidents</h1>
   {{ map1 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is
 		projected to highlight all activity within one mile of the address entered. Click on an incident to find out more details.
 	Check out the links below for more emergency data maps and analysis.</h3>
-	<div class="row" style="margin:auto; width:39%">
+	<div class="row button-div" style="margin:auto;">
 		<div class="column"><a href="{{ url_for('emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/map_911.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('emergency') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_911.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_911.png') }}" height="100"></a></div>
@@ -79,13 +87,13 @@
 
 
 
- <div class="container-md" style="width:80%; margin:auto; text-align:center;">
+ <div class="container-md address-box">
 <h1 style="font-weight:bold; margin:.2em;">Criminal Activity</h1>
   {{ map2 | safe }}
 	 <h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is
 		projected to highlight all activity within one mile of the address entered. Click on an incident to find out more details.
 	 Check out the links below for more criminal activity data maps and analysis.</h3>
-	<div class="row" style="margin:auto; width:39%">
+	<div class="row button-div">
 		<div class="column"><a href="{{ url_for('crime') }}"><img src="{{ url_for('static', filename='/images/graphs/map_crime.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('crime') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_crime.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('crime') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_crime.png') }}" height="100"></a></div>
@@ -94,7 +102,7 @@
  	</div>
 
 
-<div class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div class="container-md address-box">
 <h1 style="font-weight:bold; margin:.2em;">What's Being Built?</h1>
   {{ map3 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Building activity data based on currently issued building permits.
@@ -103,13 +111,13 @@
 
 </div>
 
-<div class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div class="container-md address-box">
 <h1 style="font-weight:bold; margin:.2em;">What's Going to be Being Built?</h1>
   {{ map4 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Current land use proposals for future construction projects registered
 		with the city of Seattle. Click on an activity icon to find out more details,
 		including a link to the permits. Search for specific neighborhoods, or specific building activity types using the search controls at the top of the map. Check out the links below for more local building data maps and analysis.</h3>
-	<div class="row" style="margin:auto; width:39%">
+	<div class="row button-div">
 		<div class="column"><a href="{{ url_for('build') }}"><img src="{{ url_for('static', filename='/images/graphs/map_build.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('build') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_build.png') }}" height="100"></a></div>
 		<div class="column"><a href="{{ url_for('build') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_build.png') }}" height="100"></a></div>
@@ -117,7 +125,7 @@
 	</div>
 </div>
 
-<div id="map-pos" class="container-md" style="width:80%; margin:auto; text-align:center;">
+<div id="map-pos" class="container-md address-box" >
 <h1 style="font-weight:bold; margin:.2em;">Code Violations :(</h1>
   {{ map5 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Reported code violation data collected over the last 60 days. See who's not mowing their lawn, who's the neighborhood hoarder, and
@@ -132,5 +140,4 @@
 {% endif %}
 
 					</div>
-				<!-- Footer -->
-{% include "footer.html" %}
+{% endblock %}}
