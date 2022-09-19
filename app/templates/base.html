@@ -40,7 +40,7 @@
 
 					<p style="color:black;">We would love to hear from you</p>
 							<form method="POST" action="{{url_for('main.contact')}}">
-                                {{ form.csrf_token }}
+                                {{ contact_form.csrf_token }}
     <div class="form-group" style="padding:.5em 2em 2em 2em;">
         {{ contact_form.email.label }}
         {% if contact_form.email.errors %}

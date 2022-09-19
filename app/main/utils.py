@@ -22,8 +22,8 @@ def get_geojson():
 
 
 def contact_form_email(sender, message):
-    email = 'MY_EMAIL'
-    email_password = 'MY_EMAIL_PASSWORD'
+    email = 'noele952@gmail.com'
+    email_password = 'fuwzipkplwxxdrqw'
     with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
         connection.starttls()
         connection.login(user=email, password=email_password)
@@ -196,8 +196,6 @@ def address_circle_poly(lon, lat, radius=805):
 def create_map(neighborhood, incident, data, marker_func, type_func,
                location=(47.608, -122.335), zoom_start=12):
     geojson = get_geojson()
-    print('HEREHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
-    print(location)
     m = folium.Map(location=location, zoom_start=zoom_start)
     if neighborhood == 'Home':
         folium.Marker(

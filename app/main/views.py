@@ -6,12 +6,7 @@ from flask import render_template, redirect, url_for, current_app, abort, sessio
 
 @main_blueprint.route('/admin')
 def admin():
-    abort(400)
-
-
-@main_blueprint.context_processor
-def inject():
-    return dict(contact_form=ContactForm())
+    abort(500)
 
 
 @main_blueprint.route("/contact", methods=["POST"])
@@ -32,10 +27,9 @@ def reset():
 
 @main_blueprint.route('/', methods=['GET', 'POST'])
 def index():
-    session['page'] = 'index'
+    session['page'] = 'main.index'
     form = AddressForm()
     if form.validate_on_submit():
-        print('form validate')
         try:
             address = form.address.data + ' Seattle, WA'
             address_lat, address_lon = address_lat_lon(address)
@@ -44,11 +38,6 @@ def index():
             error = "That is not a valid address"
             return render_template('index.html', form=form, error=error, active='home')
     if len(session['address']) != 0:
-        print("address in session")
-        print(f"Session address:{session['address']}")
-        print(f"Type Session address:{type(session['address'])}")
-        print(f"Length Session address:{len(session['address'])}")
-        print(f"Session page:{session['page']}")
         data_911 = get_data(endpoints.get('emergency'), last_3days_911)
         data_crime = get_data(endpoints.get('crime'), last_3days_crime)
         data_build = get_data(endpoints.get('build'), last_3k_build)
@@ -65,7 +54,6 @@ def index():
         m5 = create_map('Home', 'All Incidents', data_violations, create_marker_violations,
                         incident_type_violations,
                         location=session['address'], zoom_start=15)
-        print("at the end")
         return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5, active='home')
     return render_template('index.html', form=form, active='home')
 
@@ -73,7 +61,7 @@ def index():
 @main_blueprint.route('/emergency', methods=['GET', 'POST'])
 def emergency():
     data_911 = get_data(endpoints.get('emergency', last_3days_911))
-    session['page'] = 'emergency'
+    session['page'] = 'main.emergency'
     form = Map911Form()
     generate_911_sunburst(data_911)
     if form.submit.data and form.validate():
@@ -89,7 +77,7 @@ def emergency():
 @main_blueprint.route('/crime', methods=['GET', 'POST'])
 def crime():
     data_crime = get_data(endpoints.get('crime', last_3days_crime))
-    session['page'] = 'crime'
+    session['page'] = 'main.crime'
     form = MapCrimeForm()
     generate_crime_sunburst(data_crime)
     if form.submit.data and form.validate():
@@ -105,7 +93,7 @@ def crime():
 @main_blueprint.route('/violations', methods=['GET', 'POST'])
 def violations():
     data_violations = get_data(endpoints.get('violations', last_60days_violations))
-    session['page'] = 'violations'
+    session['page'] = 'main.violations'
     form = ViolationsBuildForm()
     if form.submit.data and form.validate():
         m = create_map(form.neighborhood.data, 'All Incidents', data_violations, create_marker_violations,
@@ -113,7 +101,6 @@ def violations():
         return render_template('violations.html', form=form, map=m, active='violations')
     m = create_map('Entire City', 'All Incidents', data_violations, create_marker_violations,
                    incident_type_violations)
-
     return render_template('violations.html', form=form, map=m, active='violations')
 
 
@@ -121,7 +108,7 @@ def violations():
 def build():
     data_build = get_data(endpoints.get('build'), last_3k_build)
     data_landuse = get_data(endpoints.get('landuse'))
-    session['page'] = 'build'
+    session['page'] = 'main.build'
     form = MapBuildForm()
     generate_build_sunburst(data_build)
     if form.submit.data and form.validate():

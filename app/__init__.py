@@ -16,6 +16,11 @@ def create_app():
     CONFIG_TYPE = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config.from_object(CONFIG_TYPE)
 
+
+    # Register context processor
+    from app.context_processor import inject_contact_form
+    app.context_processor(inject_contact_form)
+
     # Register blueprints
     register_blueprints(app)
 
