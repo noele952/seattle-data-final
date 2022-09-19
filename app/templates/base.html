@@ -39,7 +39,7 @@
 
 
 					<p style="color:black;">We would love to hear from you</p>
-							<form method="POST" action="{{url_for('contact')}}">
+							<form method="POST" action="{{url_for('main.contact')}}">
                                 {{ form.csrf_token }}
     <div class="form-group" style="padding:.5em 2em 2em 2em;">
         {{ contact_form.email.label }}
@@ -85,16 +85,7 @@
 			</div>
 
 		<!-- Scripts -->
-			<script>
- 		 	document.addEventListener("DOMContentLoaded", function (event) {
-    		var scrollpos = localStorage.getItem("scrollpos");
-    		if (scrollpos) window.scrollTo(0, scrollpos);
-  			});
 
-  			window.onscroll = function (e) {
-    		localStorage.setItem("scrollpos", window.scrollY);
-  			};
-			</script>
 			<script src="{{ url_for( 'static', filename='assets/js/jquery.min.js') }}"></script>
 			<script src="{{ url_for( 'static', filename='assets/js/jquery.scrollex.min.js') }}"></script>
 			<script src="{{ url_for( 'static', filename='assets/js/jquery.scrolly.min.js') }}"></script>

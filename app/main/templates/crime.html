@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 				<!-- Main -->
@@ -6,13 +6,14 @@
 						<!-- Introduction -->
 							<section id="intro" class="main">
 
-								<div class="container-md" style="width:90%; margin:auto; text-align:center;">
-									<h1 style="font-weight:bold; margin:.2em;">What's Being Built?</h1>
+								<div id="map-pos" class="container-md" style="width:90%; margin:auto; text-align:center;">
+									<h1 style="font-weight:bold; margin:.2em;">Criminal Activity</h1>
+
 									<div style="position:relative; height:30px;">
-	<form class="form-inline" style="text-align:left;" method="POST" action="{{ url_for('build') }}">
+	<form class="form-inline" style="text-align:left;" method="POST" action="{{ url_for('main.crime') }}">
 		{{ form.hidden_tag() }}
   <div class="col-sm-4" style="padding-right:2px; width:20%; height:30px; display: inline-block; ">
-    {{form.incident_build() }}
+    {{form.incident_crime() }}
   </div>
 
   <div class="col-sm-4" style="width:20%; padding-right:2px; display: inline-block;">
@@ -25,65 +26,52 @@
 </form>
 </div>
   {{ map | safe }}
-<h3 style="padding:1em; line-height:2em;"> Building activity data based on currently issued building permits. Click on an activity icon to find out more details,
-	including a link to the construction permits. Search for
-	specific neighborhoods, or specific building activity types using the search controls at the top of the map</h3>
+<h3 style="padding:1em; line-height:2em;"> Incident data collected over the last 72 hours. Click on an incident to find out more details. Search for
+	specific neighborhoods, or specific incident types using the search controls at the top of the map</h3>
 	</div>
 							</section>
-
-
 <div class="container-md" style="width:90%; margin:auto; text-align:center;">
-	<h1 style="font-weight:bold; margin:1em .2em .2em .2em;" >What Id Going to be Built?</h1>
-									<div style="position:relative; height:30px;">
+	<h1 style="font-weight:bold; margin:1em .2em .2em .2em;" >Crime Incident Heatmap</h1>
 
-</div>
-  {{ map3 | safe }}
-	<h3 style="padding:1em; line-height:2em;"> Current land use proposals for future construction projects registered
-		with the city of Seattle. Click on an activity icon to find out more details,
-		including a link to the permits. Search for
-		specific neighborhoods, or specific building activity types using the search controls at the top of the map</h3>
-	</div>
-<div id="map-pos" class="container-md" style="width:90%; margin:auto; text-align:center;">
-	<h1 style="font-weight:bold; margin:1em .2em .2em .2em;" >Building Activity Heatmap</h1>
 									<div style="position:relative; height:30px;">
 
 </div>
   {{ map2 | safe }}
-	<h3 style="padding:1em; line-height:2em;"> The heatmap data is aggregated from data collected for all open building permits in the city of Seattle. The hotter the color, the greater the
+	<h3 style="padding:1em; line-height:2em;"> The heatmap data is aggregated from data collected over the last 30 days. The hotter the color, the greater the
 	activity. Use the map or your mouse controls to scroll and zoom. The heatmap will be adjusted to show local
 	patterns as your distance settings change</h3>
 	</div>
 						<!-- First Section -->
 							<section id="first" class="main special">
 
-								<h1 style="font-weight:bold; margin:1em;">Building Activity by Category</h1>
+								<h1 style="font-weight:bold; margin:1em;">Crime Incidents by Category</h1>
 								<h2 style="margin-bottom:1em;"> click on the interactive graph for more information</h2>
 								<ul class="features">
 									<li>
-										<img src="static/images/246942.png" style="width:250px">
-										<h3>Building Activity</h3>
-										<p style="text-align:left">The interactive sunburst graph to the right breaks down the building permit data by category. The main
-											categories are Residentail and Non-Residential. Click on one of the main categories in the center
-										for a breakdown of all the activity in that particular category.</p>
+										<img src="{{ url_for('static', filename='/images/246942.png') }}" style="width:250px">
+										<h3>Criminal Activity</h3>
+										<p style="text-align:left">The interactive sunburst graph to the right breaks down the crime data by category. The main
+											categories are crimes against Property, Society, or crimes against another Person. Click on one of the main categories in the center
+										for a breakdown of all the incidents in that particular category.</p>
 										<p style="text-align:left">Hover over a section of the graph for more information, like
-										the actual activity count.</p>
+										the actual incident count.</p>
 									</li>
 									<li>
-										<iframe class="image sunburst" src="static/sunburst_build.html" ></iframe>
+										<iframe class="image sunburst" src="{{ url_for('static', filename='/sunburst_crime.html') }}" ></iframe>
 									</li>
 
 								</ul>
 								<footer class="major">
 									<ul class="actions special">
-										<li><a href="static/sunburst_build.html" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Full Screen Sunburst Graph</a></li>
+										<li><a href="{{ url_for('static', filename='sunburst_crime.html') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Full Screen Sunburst Graph</a></li>
 									</ul>
-								</footer>
-								</ul>
+									</ul>
 
 									<ul class="actions special">
-										<li><a href="{{ url_for('index') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Home</a></li>
+										<li><a href="{{ url_for('main.index') }}" class="button" style="margin-bottom:1em; height:30px; background-color:#008CBA; color:white; text-weight:bold;">Home</a></li>
 
 									</ul>
+								</footer>
 							</section>
 
 						<!-- Second Section

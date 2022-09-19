@@ -1,7 +1,7 @@
 import folium
 from folium import plugins
 from shapely.geometry import shape, Point
-from data import *
+from .data import *
 from datetime import datetime
 import requests
 import urllib.parse
@@ -11,6 +11,14 @@ from functools import partial
 import pandas as pd
 import plotly.express as px
 import smtplib
+import json
+
+
+def get_geojson():
+    geojson = 'app/static/seattle_neighborhoods.geojson'
+    with open(geojson) as file:
+        geojson = json.load(file)['features']
+    return geojson
 
 
 def contact_form_email(sender, message):
@@ -23,9 +31,9 @@ def contact_form_email(sender, message):
     return 1
 
 
-def create_neighborhood_list(geojson):
+def get_neighborhood_list():
     neighborhood_list = []
-    for feature in geojson:
+    for feature in get_geojson():
         if feature['properties']['city'] == 'Seattle':
             neighborhood_list.append(feature['properties']['name'])
     neighborhood_list.sort(reverse=True)
@@ -185,8 +193,11 @@ def address_circle_poly(lon, lat, radius=805):
     return circle_poly
 
 
-def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
+def create_map(neighborhood, incident, data, marker_func, type_func,
                location=(47.608, -122.335), zoom_start=12):
+    geojson = get_geojson()
+    print('HEREHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
+    print(location)
     m = folium.Map(location=location, zoom_start=zoom_start)
     if neighborhood == 'Home':
         folium.Marker(
@@ -226,10 +237,11 @@ def create_map(neighborhood, incident, data, geojson, marker_func, type_func,
                           ).add_to(m)
                 except (ValueError, KeyError, TypeError) as error:
                     print(error)
-    return m
+    return m._repr_html_()
 
 
-def generate_heatmap(neighborhood, incident, data, geojson, type_func):
+def generate_heatmap(neighborhood, incident, data, type_func):
+    geojson = get_geojson()
     m = folium.Map(location=[47.608, -122.335], tiles='Cartodb dark_matter', zoom_start=13)
     point_list = []
     if incident == 'All Incidents':
@@ -252,13 +264,14 @@ def generate_heatmap(neighborhood, incident, data, geojson, type_func):
             if feature['properties']['name'] == neighborhood:
                 center_lat = shape(feature["geometry"]).buffer(0).centroid.y
                 center_lon = shape(feature["geometry"]).buffer(0).centroid.x
+                print(center_lon)
                 m = folium.Map(location=[center_lat,
                                          center_lon],
                                zoom_start=15)
                 folium.GeoJson(feature['geometry'], name='geojson').add_to(m)
     heat_data = [[point.xy[1][0], point.xy[0][0]] for point in point_list]
     plugins.HeatMap(heat_data).add_to(m)
-    return m
+    return m._repr_html_()
 
 
 def generate_911_sunburst(data_911):
@@ -285,8 +298,8 @@ def generate_911_sunburst(data_911):
                       )
     fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
 
-    fig.write_image('static/images/graphs/sunburst_911.png')
-    fig.write_html('static/sunburst_911.html')
+    fig.write_image('app/static/images/graphs/sunburst_911.png')
+    fig.write_html('app/static/sunburst_911.html')
     return 1
 
 
@@ -305,8 +318,8 @@ def generate_crime_sunburst(data_crime):
                       )
     fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
 
-    fig.write_html('static/sunburst_crime.html')
-    fig.write_image('static/images/graphs/sunburst_crime.png')
+    fig.write_html('app/static/sunburst_crime.html')
+    fig.write_image('app/static/images/graphs/sunburst_crime.png')
     return 1
 
 
@@ -327,5 +340,5 @@ def generate_build_sunburst(data_build):
                       color_continuous_scale='Turbo'
                       )
     fig.update_traces(insidetextorientation='radial', hovertemplate='%{label} <br>Counts: %{value}')
-    fig.write_image('static/images/graphs/sunburst_build.png')
-    fig.write_html('static/sunburst_build.html')
+    fig.write_image('app/static/images/graphs/sunburst_build.png')
+    fig.write_html('app/static/sunburst_build.html')

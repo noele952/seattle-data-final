@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 				<!-- Main -->
@@ -16,7 +16,7 @@
 									{% if error %}
     <p class=error style="color:red;"> {{ error }}
   {% endif %}
-	<form class="form-inline" method="POST" action="{{ url_for('index') }}">
+	<form class="form-inline" method="POST" action="{{ url_for('main.index') }}">
 		{{ form.csrf_token }}
   <div class="col-sm-4" style="padding-right:2px; height:30px;  margin:auto;">
     {{form.address(style="width:60%; margin:auto; ") }}
@@ -39,21 +39,21 @@
 		<img src="{{ url_for('static', filename='/images/kindpng_1108202.png') }}" height="250">
 		<h3 style="font-weight:bold;">Emergency Events</h3>
 		<p style="padding-top:1em; padding-bottom:1em">From medical emergencies, to fire events, gas leaks, and rescue situations. What's the emergency in your neighborhood </p>
-		<a href="{{ url_for('emergency') }}" class="button button-front" style="background-color:#008CBA; color:white;">Emergency Events</a></li>
+		<a href="{{ url_for('main.emergency') }}" class="button button-front" style="background-color:#008CBA; color:white;">Emergency Events</a></li>
 
 		<li>
 
 			<img src="{{ url_for('static', filename='/images/squatch.jpg') }}" height="250">
 			<h3 style="font-weight:bold;">Crime Activity</h3>
 			<p style="padding-top:1em; padding-bottom:1em">Find out about what criminal activities are going on around your area, and heatmaps showing where the activity is concentrated.</p>
-			<a href="{{ url_for('crime') }}" class="button button-front" style="background-color:#008CBA; color:white;">Crime Activity</a></li>
+			<a href="{{ url_for('main.crime') }}" class="button button-front" style="background-color:#008CBA; color:white;">Crime Activity</a></li>
 
 		<li>
 			<img src="{{ url_for('static', filename='/images/wood-cabin.jpg') }}" height="250">
 			<h3 style="font-weight:bold;">What's being built?</h3>
 			<p style="padding-top:1em; padding-bottom:1em">What's being built in your neighborhood? Information about issued building permits, land use actions, and more.</p>
 
-			<a href="{{ url_for('build') }}" class="button button-front" style="background-color:#008CBA; color:white;">Building</a>
+			<a href="{{ url_for('main.build') }}" class="button button-front" style="background-color:#008CBA; color:white;">Building</a>
 
 		</li>
 		<li>
@@ -61,7 +61,7 @@
 		<h3 style="font-weight:bold;">Code Violations</h3>
 		<p style="padding-top:1em; padding-bottom:1em">Find out who's not mowing their lawn, and other nefarious deeds. Current reported code violations, mapped to your neighborhood. With more information, including links
 		to the official complaint</p>
-		<a href="{{ url_for('violations') }}" class="button button-front" style="background-color:#008CBA; color:white;">Code Violations</a>
+		<a href="{{ url_for('main.violations') }}" class="button button-front" style="background-color:#008CBA; color:white;">Code Violations</a>
 		</li>
 </ul>
 </div>
@@ -69,19 +69,19 @@
 {% else %}
 
 <div class="container-md address-box">
-	<a href="{{ url_for('reset') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin:1em; text-align:center;">Reset Address</a>
+	<a href="{{ url_for('main.reset') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin:1em; text-align:center;">Reset Address</a>
 <h1 style="font-weight:bold; margin:.2em;">Emergency Incidents</h1>
   {{ map1 | safe }}
 	<h3 style="padding:1em 3em; line-height:2em;"> Incident data collected over the last 72 hours. A blue target zone is
 		projected to highlight all activity within one mile of the address entered. Click on an incident to find out more details.
 	Check out the links below for more emergency data maps and analysis.</h3>
 	<div  style="margin:auto;">
-		<div class="column" style="display:inline;"><a href="{{ url_for('emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/map_911.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline;"><a href="{{ url_for('emergency') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_911.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline;"><a href="{{ url_for('emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_911.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/map_911.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.emergency') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_911.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.emergency') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_911.png') }}" height="100"></a></div>
 		</div>
 	<div class="row button-div" style="margin:auto;">
-		<a href="{{ url_for('emergency') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More 911 Data</a>
+		<a href="{{ url_for('main.emergency') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More 911 Data</a>
 	</div>
 	</div>
 
@@ -95,12 +95,12 @@
 		projected to highlight all activity within one mile of the address entered. Click on an incident to find out more details.
 	 Check out the links below for more criminal activity data maps and analysis.</h3>
 	<div  style="margin:auto;">
-		<div class="column" style="display:inline;"><a href="{{ url_for('crime') }}"><img src="{{ url_for('static', filename='/images/graphs/map_crime.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline;"><a href="{{ url_for('crime') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_crime.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline;"><a href="{{ url_for('crime') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_crime.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.crime') }}"><img src="{{ url_for('static', filename='/images/graphs/map_crime.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.crime') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_crime.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline;"><a href="{{ url_for('main.crime') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_crime.png') }}" height="100"></a></div>
 		</div>
 		<div class="row button-div" style="margin:auto;">
-		<a href="{{ url_for('crime') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Crime Data</a>
+		<a href="{{ url_for('main.crime') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Crime Data</a>
 	</div>
  	</div>
 
@@ -121,12 +121,12 @@
 		with the city of Seattle. Click on an activity icon to find out more details,
 		including a link to the permits. Search for specific neighborhoods, or specific building activity types using the search controls at the top of the map. Check out the links below for more local building data maps and analysis.</h3>
 	<div  style="margin:auto;">
-		<div class="column" style="display:inline";><a href="{{ url_for('build') }}"><img src="{{ url_for('static', filename='/images/graphs/map_build.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline";><a href="{{ url_for('build') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_build.png') }}" height="100"></a></div>
-		<div class="column" style="display:inline"; ><a href="{{ url_for('build') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_build.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline";><a href="{{ url_for('main.build') }}"><img src="{{ url_for('static', filename='/images/graphs/map_build.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline";><a href="{{ url_for('main.build') }}#"><img src="{{ url_for('static', filename='/images/graphs/heatmap_build.png') }}" height="100"></a></div>
+		<div class="column" style="display:inline"; ><a href="{{ url_for('main.build') }}"><img src="{{ url_for('static', filename='/images/graphs/sunburst_build.png') }}" height="100"></a></div>
 		</div>
 		<div class="row button-div" style="margin:auto;">
-		<a href="{{ url_for('build') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Building Activity Data</a>
+		<a href="{{ url_for('main.build') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Building Activity Data</a>
 	</div>
 </div>
 
@@ -137,7 +137,7 @@
 	other even more nefarious deeds. Click on an incident to find out a description of the alleged violation, the report date
 	and more.</h3>
 	<div class="row" style="margin:auto; width:39%">
-		<a href="{{ url_for('violations') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Code Violation Data</a>
+		<a href="{{ url_for('main.violations') }}" class="button button-front" style="background-color:#008CBA; color:white; margin:auto; margin-top:1em; margin-bottom:3em;">More Code Violation Data</a>
 	</div>
 </div>
 

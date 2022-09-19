@@ -1,0 +1,12 @@
+<nav style="width:100%;" class="topnav" id="nav">
+  <ul>
+
+
+    <li class="{% if active=='home' %}active{%endif %}"><a href="{{ url_for('main.index') }}" >Home</a></li>
+    <li class="{% if active=='emergency' %}active{%endif %}"><a href="{{ url_for('main.emergency') }}" >911</a></li>
+    <li class="{% if active=='crime' %}active{%endif %}"><a href="{{ url_for('main.crime') }}" >Crime</a></li>
+    <li class="{% if active=='build' %}active{%endif %}"><a href="{{ url_for('main.build') }}" >Build</a></li>
+    <li class="{% if active=='violations' %}active{%endif %}"><a href="{{ url_for('main.violations') }}" >Violations</a></li>
+
+  </ul>
+</nav>
