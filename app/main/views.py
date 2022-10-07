@@ -37,25 +37,28 @@ def index():
         except IndexError:
             error = "That is not a valid address"
             return render_template('index.html', form=form, error=error, active='home')
-    if len(session['address']) != 0:
-        data_911 = get_data(endpoints.get('emergency'), last_3days_911)
-        data_crime = get_data(endpoints.get('crime'), last_3days_crime)
-        data_build = get_data(endpoints.get('build'), last_3k_build)
-        data_landuse = get_data(endpoints.get('landuse'))
-        data_violations = get_data(endpoints.get('violations', last_60days_violations))
-        m1 = create_map('Home', 'All Incidents', data_911, create_marker_text_911, incident_type_911,
-                        location=session['address'], zoom_start=15)
-        m2 = create_map('Home', 'All Incidents', data_crime, create_marker_text_crime, incident_type_crime,
-                        location=session['address'], zoom_start=15)
-        m3 = create_map('Home', 'All Incidents', data_build, create_marker_text_build, incident_type_build,
-                        location=session['address'], zoom_start=15)
-        m4 = create_map('Home', 'All Incidents', data_landuse,  create_marker_landuse, incident_type_landuse,
-                        location=session['address'], zoom_start=15)
-        m5 = create_map('Home', 'All Incidents', data_violations, create_marker_violations,
-                        incident_type_violations,
-                        location=session['address'], zoom_start=15)
-        return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5, active='home')
-    return render_template('index.html', form=form, active='home')
+    print(session)
+    try:
+        if session['address']:
+            data_911 = get_data(endpoints.get('emergency'), last_3days_911)
+            data_crime = get_data(endpoints.get('crime'), last_3days_crime)
+            data_build = get_data(endpoints.get('build'), last_3k_build)
+            data_landuse = get_data(endpoints.get('landuse'))
+            data_violations = get_data(endpoints.get('violations', last_60days_violations))
+            m1 = create_map('Home', 'All Incidents', data_911, create_marker_text_911, incident_type_911,
+                            location=session['address'], zoom_start=15)
+            m2 = create_map('Home', 'All Incidents', data_crime, create_marker_text_crime, incident_type_crime,
+                            location=session['address'], zoom_start=15)
+            m3 = create_map('Home', 'All Incidents', data_build, create_marker_text_build, incident_type_build,
+                            location=session['address'], zoom_start=15)
+            m4 = create_map('Home', 'All Incidents', data_landuse,  create_marker_landuse, incident_type_landuse,
+                            location=session['address'], zoom_start=15)
+            m5 = create_map('Home', 'All Incidents', data_violations, create_marker_violations,
+                            incident_type_violations,
+                            location=session['address'], zoom_start=15)
+            return render_template('index.html', form=form, map1=m1, map2=m2, map3=m3, map4=m4, map5=m5, active='home')
+    except KeyError:
+        return render_template('index.html', form=form, active='home')
 
 
 @main_blueprint.route('/emergency', methods=['GET', 'POST'])
