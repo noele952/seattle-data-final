@@ -92,8 +92,7 @@ Data provided by: https://data.seattle.gov/
 <!-- GETTING STARTED -->
 ## Getting Started
 
-If you would like to run it locally, a Docker container is available at:
-
+If you would like to run it locally, a Docker container is available.
 * docker
   ```sh
   docker pull noele952/seattle-data-final
