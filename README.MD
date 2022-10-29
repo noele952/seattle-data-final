@@ -110,7 +110,7 @@ If you would like to run it locally, a Docker container is available at:
 <!-- USAGE EXAMPLES -->
 ## Usage
 <div align="center">
-<img src="images/Screenshot_20221028_051502.png" alt="Logo" width="220" height="100">
+<img src="images/Screenshot_20221028_051502.png" alt="Logo" width="400" >
 <p>On the landing page it has links to the four categories of mapped data
 <ul style="text-align:left;">
 <li>911 emergency call data</li>
@@ -120,12 +120,12 @@ If you would like to run it locally, a Docker container is available at:
 </ul>
 <p>If you enter in an address it will show you maps for all four categories based on the location provided. If you click
 the links instead it will load more general maps based on the category.</p>
-<img src="images/Screenshot_20221028_051136.png" alt="Logo" width="220" height="100">
+<img src="images/Screenshot_20221028_051136.png" alt="Logo" width="400">
 <p>Refine your map data based on neighborhood and/or specific type of incident. Click on the incident marker to see
 more information about the incident</p>
-<img src="images/Screenshot_20221028_050424.png" alt="Logo" width="220" height="100">
+<img src="images/Screenshot_20221028_050424.png" alt="Logo" width="400">
 <p>View the incident data in heatmap form.</p>
-<img src="images/Screenshot_20221028_051346.png" alt="Logo" width="220" height="100">
+<img src="images/Screenshot_20221028_051346.png" alt="Logo" width="400">
 <p>See the incident date broken down into an interactive "sunburst" graph.</p>
 
 </div>
