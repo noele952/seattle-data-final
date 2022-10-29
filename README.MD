@@ -69,7 +69,7 @@ are based on more long term data.
 
 Written in Python on the Flask web framework, with maps generated with folium, and graphs generated with plotly
 <div align="center">
-<img src="images/Screenshot_20221028_051136.png" alt="Logo" width="220" height="100">
+<img src="images/Screenshot_20221028_051136.png" alt="Logo" width="600">
 </div>
 
 
